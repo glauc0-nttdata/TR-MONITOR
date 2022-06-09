@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="http://vhcalnplci:8000/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZCTE070_CDS" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="ZCTE070Type" sap:label="Consumption from ZOTE070" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TR"/>
+                </Key>
+                <Property Name="TR" Type="Edm.String" Nullable="false" MaxLength="20" sap:display-format="UpperCase" sap:label="Request/Task"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="60" sap:label="Short Description" sap:quickinfo="Short Description of Repository Objects"/>
+                <Property Name="Owner" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Owner" sap:quickinfo="Owner of a Request or Task" sap:value-list="standard"/>
+                <NavigationProperty Name="to_repack" Relationship="ZCTE070_CDS.assoc_1628F2981764E1AC5EFA7F4A67EF46A7" FromRole="FromRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7" ToRole="ToRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7"/>
+                <NavigationProperty Name="to_task" Relationship="ZCTE070_CDS.assoc_30BA231634F4156C0780EBDF733F1201" FromRole="FromRole_assoc_30BA231634F4156C0780EBDF733F1201" ToRole="ToRole_assoc_30BA231634F4156C0780EBDF733F1201"/>
+                <NavigationProperty Name="to_userDetail" Relationship="ZCTE070_CDS.assoc_F1683A9CC5FD0361142CC04AA5E985F2" FromRole="FromRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2" ToRole="ToRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2"/>
+            </EntityType>
+            <EntityType Name="ZOE071Type" sap:label="Basic view from E070/E071" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TR"/>
+                    <PropertyRef Name="Line_item"/>
+                </Key>
+                <Property Name="TR" Type="Edm.String" Nullable="false" MaxLength="20" sap:display-format="UpperCase" sap:label="Request/Task"/>
+                <Property Name="Line_item" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="NonNegative" sap:label="" sap:quickinfo="Dictionary: Line item"/>
+                <Property Name="Object_type" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Object Type"/>
+                <Property Name="Object_name" Type="Edm.String" MaxLength="120" sap:display-format="UpperCase" sap:label="Obj. Name" sap:quickinfo="Object Name in Object List"/>
+                <Property Name="TR_parent" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Higher-Level Request"/>
+            </EntityType>
+            <EntityType Name="ZOE071_REPACKType" sap:label="Composite view (REPACKS)" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TR"/>
+                    <PropertyRef Name="Line_item"/>
+                </Key>
+                <Property Name="TR" Type="Edm.String" Nullable="false" MaxLength="20" sap:display-format="UpperCase" sap:label="Request/Task"/>
+                <Property Name="Line_item" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="NonNegative" sap:label="" sap:quickinfo="Dictionary: Line item"/>
+                <Property Name="Object_type" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Object Type"/>
+                <Property Name="Object_name" Type="Edm.String" MaxLength="120" sap:display-format="UpperCase" sap:label="Obj. Name" sap:quickinfo="Object Name in Object List"/>
+                <Property Name="TR_parent" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Higher-Level Request"/>
+            </EntityType>
+            <EntityType Name="ZOUSERDETAILType" sap:label="User detail (Quick view)" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Owner"/>
+                </Key>
+                <Property Name="Owner" Type="Edm.String" Nullable="false" MaxLength="12" sap:display-format="UpperCase" sap:label="User" sap:quickinfo="User Name in User Master Record"/>
+                <Property Name="First_name" Type="Edm.String" MaxLength="40" sap:label="First Name"/>
+                <Property Name="Last_name" Type="Edm.String" MaxLength="40" sap:label="Last name"/>
+            </EntityType>
+            <Association Name="assoc_30BA231634F4156C0780EBDF733F1201" sap:content-version="1">
+                <End Type="ZCTE070_CDS.ZCTE070Type" Multiplicity="1" Role="FromRole_assoc_30BA231634F4156C0780EBDF733F1201"/>
+                <End Type="ZCTE070_CDS.ZOE071Type" Multiplicity="*" Role="ToRole_assoc_30BA231634F4156C0780EBDF733F1201"/>
+            </Association>
+            <Association Name="assoc_F1683A9CC5FD0361142CC04AA5E985F2" sap:content-version="1">
+                <End Type="ZCTE070_CDS.ZCTE070Type" Multiplicity="1" Role="FromRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2"/>
+                <End Type="ZCTE070_CDS.ZOUSERDETAILType" Multiplicity="0..1" Role="ToRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2"/>
+                <ReferentialConstraint>
+                    <Principal Role="ToRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2">
+                        <PropertyRef Name="Owner"/>
+                    </Principal>
+                    <Dependent Role="FromRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2">
+                        <PropertyRef Name="Owner"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="assoc_1628F2981764E1AC5EFA7F4A67EF46A7" sap:content-version="1">
+                <End Type="ZCTE070_CDS.ZCTE070Type" Multiplicity="1" Role="FromRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7"/>
+                <End Type="ZCTE070_CDS.ZOE071_REPACKType" Multiplicity="*" Role="ToRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7"/>
+            </Association>
+            <EntityContainer Name="ZCTE070_CDS_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ZCTE070" EntityType="ZCTE070_CDS.ZCTE070Type" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="ZOE071" EntityType="ZCTE070_CDS.ZOE071Type" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZOE071_REPACK" EntityType="ZCTE070_CDS.ZOE071_REPACKType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZOUSERDETAIL" EntityType="ZCTE070_CDS.ZOUSERDETAILType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <AssociationSet Name="assoc_1628F2981764E1AC5EFA7F4A67EF46A7" Association="ZCTE070_CDS.assoc_1628F2981764E1AC5EFA7F4A67EF46A7" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZCTE070" Role="FromRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7"/>
+                    <End EntitySet="ZOE071_REPACK" Role="ToRole_assoc_1628F2981764E1AC5EFA7F4A67EF46A7"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_F1683A9CC5FD0361142CC04AA5E985F2" Association="ZCTE070_CDS.assoc_F1683A9CC5FD0361142CC04AA5E985F2" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZCTE070" Role="FromRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2"/>
+                    <End EntitySet="ZOUSERDETAIL" Role="ToRole_assoc_F1683A9CC5FD0361142CC04AA5E985F2"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_30BA231634F4156C0780EBDF733F1201" Association="ZCTE070_CDS.assoc_30BA231634F4156C0780EBDF733F1201" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZCTE070" Role="FromRole_assoc_30BA231634F4156C0780EBDF733F1201"/>
+                    <End EntitySet="ZOE071" Role="ToRole_assoc_30BA231634F4156C0780EBDF733F1201"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotations Target="ZCTE070_CDS.ZCTE070Type/Owner" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="User detail (Quick view)"/>
+                        <PropertyValue Property="CollectionPath" String="ZOUSERDETAIL"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Owner"/>
+                                    <PropertyValue Property="ValueListProperty" String="Owner"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <atom:link rel="self" href="http://vhcalnplci:8000/sap/opu/odata/sap/ZCTE070_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="http://vhcalnplci:8000/sap/opu/odata/sap/ZCTE070_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
