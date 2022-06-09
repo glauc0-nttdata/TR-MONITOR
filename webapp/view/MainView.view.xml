@@ -58,6 +58,7 @@
 							class="sapUiResponsiveContentPadding" 
 							editTogglable="false" 
 							app:useSmartToggle="true">
+							<!-- ESSA FOI UMA DAS TENTATIVAS UTILIZANDO O EXEMPLO DA SAP -->
 							<smartTable:semanticObjectController>
 								<SemanticObjectController
 										enableAvailableActionsPersonalization='\{"Owner":true\}'/>
