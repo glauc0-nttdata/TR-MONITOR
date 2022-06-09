@@ -1,0 +1,143 @@
+Favor criar na sequencia abaixo:
+
+
+==========================================================================
+1)
+ZBE071
+Basic view from E071
+==========================================================================
+@AbapCatalog.sqlViewName: 'ZB_E071'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Basic view from E071'
+@VDM.viewType: #BASIC
+define view ZBE071 as select from e071 {
+    key trkorr as TR,
+    key as4pos as Line_item,
+    pgmid as Program_ID,
+    object as Object_type,
+    obj_name as Object_name,
+    objfunc as Object_function,
+    lockflag as Status,
+    gennum as Language_info,
+    lang as Language_key,
+    activity as Activity_that_wrote
+}
+
+
+==========================================================================
+2)
+ZBE070
+Basic view from E070
+==========================================================================
+@AbapCatalog.sqlViewName: 'ZB_E070'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Basic view from E070'
+@VDM.viewType: #BASIC
+define view ZBE070 as select from e070 as tr
+left outer join e07t as txt
+             on txt.trkorr = tr.trkorr 
+{
+    key tr.trkorr as TR,
+    key txt.langu as Language,
+        tr.trfunction as Type_of_TR,
+        tr.trstatus as Status_of_TR,
+        tr.tarsystem as Transport_target,
+        tr.korrdev as Category,
+        tr.as4user as Owner,
+        tr.as4date as Date_Last_change,
+        tr.as4time as Time_Last_change,
+        tr.strkorr as TR_parent,
+        txt.as4text as Description
+}
+
+
+==========================================================================
+3)
+ZOE071
+Basic view from E070/E071
+==========================================================================
+@AbapCatalog.sqlViewName: 'ZO_E071'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Basic view from E070/E071'
+define view ZOE071 as select from ZBE070 as tr
+inner join ZBE071 as task
+on task.TR = tr.TR
+{
+    key tr.TR,
+    key task.Line_item,
+        task.Object_type,
+        task.Object_name,
+        tr.TR_parent
+}
+
+
+==========================================================================
+4)
+ZOTE070
+Composite view from ZBE070
+==========================================================================
+@AbapCatalog.sqlViewName: 'ZOT_E070'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Composite view from ZBE070'
+@VDM.viewType: #COMPOSITE
+define view ZOTE070 as select from ZBE070 as tr  
+{
+    key tr.TR,
+        tr.TR_parent,
+        tr.Type_of_TR,
+        tr.Description,
+        tr.Owner
+}
+where tr.TR_parent = ''
+
+
+
+==========================================================================
+5)
+ZCTE070
+Consumption from ZOTE070
+==========================================================================
+@AbapCatalog.sqlViewName: 'ZCT_E070'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Consumption from ZOTE070'
+@VDM.viewType: #CONSUMPTION
+@Search.searchable: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+@OData.publish: true
+define view ZCTE070 as select from ZOTE070 as tr 
+association [1..*] to ZOE071 as _task 
+    on _task.TR_parent = tr.TR 
+association [1..*] to ZOE071 as _repack 
+    on _repack.TR = tr.TR 
+association [0..1] to ZOUSERDETAIL as _userDetail 
+    on $projection.Owner = _userDetail.Owner
+{
+
+    @Search.defaultSearchElement: true
+    key tr.TR,    
+    @Search.defaultSearchElement: true
+    tr.Description,  
+    @ObjectModel.foreignKey.association: '_userDetail'
+    @Consumption.semanticObject: 'UserDetail'  
+    @Search.defaultSearchElement: true
+    tr.Owner,
+    
+    //Make associations public
+    _task,    
+    _repack,
+    _userDetail
+}
