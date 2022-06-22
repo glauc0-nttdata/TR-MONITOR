@@ -118,6 +118,7 @@ Consumption from ZOTE070
   dataClass: #MIXED
 }
 @OData.publish: true
+@UI.presentationVariant: [{ sortOrder: [{ by: 'TR', direction: #ASC }] }]
 define view ZCTE070 as select from ZOTE070 as tr 
 association [1..*] to ZOE071 as _task 
     on _task.TR_parent = tr.TR 
